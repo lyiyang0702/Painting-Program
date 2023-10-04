@@ -1,5 +1,4 @@
 # Painting-Program
-# GAME 230 HW1 
 ## Important Notes:
 Long press left mouse button to draw lines.<br>
 Scroll down mouse wheel to switch to triangle shape brush.<br>
