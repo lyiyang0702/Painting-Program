@@ -5,14 +5,12 @@
 #include <SFML/System.hpp>
 #include <SFML/OpenGL.hpp>
 #include <SFML/Main.hpp>
-#include "MouseManager.hpp"
 #include <iostream>
 #include <vector>
 using namespace std;
 using namespace sf;
 int main()
 {
-    MouseManager mouse;
     int brushIndex = 0;
     int colorIndex = 0;
     int leftIsDown = false;
@@ -22,7 +20,7 @@ int main()
     Color currCol = colors[0];
     vector<VertexArray> lines;
     Vector2i lastMousePos(0, 0);
-
+    bool isTriangle = false;
     RenderWindow window(VideoMode(800,600), "Painting program");
     window.setFramerateLimit(30);
 
@@ -86,11 +84,11 @@ int main()
             if (event.type == Event::MouseWheelMoved) {
 
                 if (event.mouseWheel.delta < 0) {
-     
+                    isTriangle = true;
                 }
 
                 if (event.mouseWheel.delta > 0) {
-
+                    isTriangle = false;
                 }
 
             }
@@ -100,10 +98,17 @@ int main()
         {
             if (lastMousePos != Mouse::getPosition())
             {
-                Vector2f mouseCoord = mouse.GetMouseCoordination(window);
+                Vector2f mouseCoord = window.mapPixelToCoords(Mouse::getPosition(window));
                 //cout << "vertices in line " << lines.size() << endl;
                 // add vertex
-               lines.back().append(Vertex(mouseCoord, currCol));
+                lines.back().append(Vertex(mouseCoord, currCol));
+               if (isTriangle) {
+                   Vector2f verticesOne = Vector2f(mouseCoord.x - 10.0f, mouseCoord.y -20.0f);
+                   Vector2f verticesTwo = Vector2f(mouseCoord.x + 10.0f, mouseCoord.y - 20.0f);
+                   lines.back().append(Vertex(mouseCoord, currCol));
+                   lines.back().append(Vertex(verticesOne, currCol));
+                   lines.back().append(Vertex(verticesTwo, currCol));
+               }
                 lastMousePos = Mouse::getPosition();
             }
         }
